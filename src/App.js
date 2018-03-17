@@ -12,24 +12,40 @@ class BooksApp extends React.Component {
      * pages, as well as provide a good URL they can bookmark and share.
      */
     showSearchPage: false,
-    books: [],
+    books: {},
+    shelves: {
+      currentlyReading: [],
+      wantToRead: [],
+      read: [],
+    }
   }
 
   componentDidMount() {
-    BooksAPI.getAll().then((books) => {
-      this.setState({ books })
+    BooksAPI.getAll().then((allBooks) => {
+      const books = {}
+      const shelves = {
+        currentlyReading: [],
+        wantToRead: [],
+        read: [],
+      }
+
+      allBooks.forEach((book) => {
+        books[book.id] = {
+          id: book.id,
+          coverURL: book.imageLinks.thumbnail,
+          title: book.title,
+          authors: book.authors,
+        }
+        shelves[book.shelf].push(book.id)
+      })
+
+      this.setState({ books, shelves })
     })
   }
 
   updateShelf = (bookToMove, shelf) => {
-    BooksAPI.update(bookToMove, shelf).then((res) => {
-      this.setState((prevState, props) => {
-        const bookToMoveIndex = prevState.books.findIndex((book) => book.id === bookToMove.id)
-        const bookMoved = Object.assign({}, bookToMove, { shelf })
-        return {
-          books: Object.assign([], prevState.books, { [bookToMoveIndex]: bookMoved }),
-        }
-      })
+    BooksAPI.update(bookToMove, shelf).then((shelves) => {
+      this.setState({ shelves })
     })
   }
 
@@ -65,17 +81,20 @@ class BooksApp extends React.Component {
               <div className="list-books-content">
                 <Bookshelf
                   title="Currently Reading"
-                  books={this.state.books.filter((book) => book.shelf === 'currentlyReading')}
+                  value="currentlyReading"
+                  books={this.state.shelves.currentlyReading.map((shelf) => this.state.books[shelf])}
                   onChangeShelf={this.updateShelf}
                 />
                 <Bookshelf
                   title="Want to Read"
-                  books={this.state.books.filter((book) => book.shelf === 'wantToRead')}
+                  value="wantToRead"
+                  books={this.state.shelves.wantToRead.map((shelf) => this.state.books[shelf])}
                   onChangeShelf={this.updateShelf}
                 />
                 <Bookshelf
                   title="Read"
-                  books={this.state.books.filter((book) => book.shelf === 'read')}
+                  value="read"
+                  books={this.state.shelves.read.map((shelf) => this.state.books[shelf])}
                   onChangeShelf={this.updateShelf}
                 />
               </div>
