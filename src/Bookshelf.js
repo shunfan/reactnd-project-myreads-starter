@@ -7,6 +7,7 @@ class Bookshelf extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     books: PropTypes.array.isRequired,
+    onChangeShelf: PropTypes.func.isRequired,
   }
 
   render() {
@@ -19,9 +20,12 @@ class Bookshelf extends Component {
               <li key={book.id}>
                 <Book
                   coverURL={book.imageLinks.thumbnail}
-                  bookshelf={book.shelf}
+                  shelf={book.shelf}
                   title={book.title}
                   authors={book.authors}
+                  onChangeShelf={(shelf) => {
+                    this.props.onChangeShelf(book, shelf)
+                  }}
                 />
               </li>
             ))}

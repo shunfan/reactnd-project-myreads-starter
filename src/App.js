@@ -3,10 +3,6 @@ import * as BooksAPI from './BooksAPI'
 import Bookshelf from './Bookshelf'
 import './App.css'
 
-BooksAPI.getAll().then((c) => {
-  console.log(c)
-})
-
 class BooksApp extends React.Component {
   state = {
     /**
@@ -22,6 +18,18 @@ class BooksApp extends React.Component {
   componentDidMount() {
     BooksAPI.getAll().then((books) => {
       this.setState({ books })
+    })
+  }
+
+  updateShelf = (bookToMove, shelf) => {
+    BooksAPI.update(bookToMove, shelf).then((res) => {
+      this.setState((prevState, props) => {
+        const bookToMoveIndex = prevState.books.findIndex((book) => book.id === bookToMove.id)
+        const bookMoved = Object.assign({}, bookToMove, { shelf })
+        return {
+          books: Object.assign([], prevState.books, { [bookToMoveIndex]: bookMoved }),
+        }
+      })
     })
   }
 
@@ -55,9 +63,21 @@ class BooksApp extends React.Component {
                 <h1>MyReads</h1>
               </div>
               <div className="list-books-content">
-                <Bookshelf title="Currently Reading" books={this.state.books.filter((book) => book.shelf === 'currentlyReading')} />
-                <Bookshelf title="Want to Read" books={this.state.books.filter((book) => book.shelf === 'wantToRead')} />
-                <Bookshelf title="Read" books={this.state.books.filter((book) => book.shelf === 'read')} />
+                <Bookshelf
+                  title="Currently Reading"
+                  books={this.state.books.filter((book) => book.shelf === 'currentlyReading')}
+                  onChangeShelf={this.updateShelf}
+                />
+                <Bookshelf
+                  title="Want to Read"
+                  books={this.state.books.filter((book) => book.shelf === 'wantToRead')}
+                  onChangeShelf={this.updateShelf}
+                />
+                <Bookshelf
+                  title="Read"
+                  books={this.state.books.filter((book) => book.shelf === 'read')}
+                  onChangeShelf={this.updateShelf}
+                />
               </div>
               <div className="open-search">
                 <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
