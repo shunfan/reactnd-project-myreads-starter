@@ -44,6 +44,17 @@ class Search extends Component {
     }
   }
 
+  onChangeShelf = (bookToMove, shelf) => {
+    this.setState((prevState) => {
+      const bookMoved = Object.assign({}, bookToMove, { shelf })
+      return {
+        booksFound: Object.assign({}, prevState.booksFound, { [bookToMove.id]: bookMoved }),
+      }
+    })
+
+    this.props.onChangeShelf(bookToMove, shelf)
+  }
+
   render() {
     return (
       <div className="search-books">
@@ -64,7 +75,7 @@ class Search extends Component {
         <div className="search-books-results">
           <BookList
             books={Object.values(this.state.booksFound)}
-            onChangeShelf={this.props.onChangeShelf}
+            onChangeShelf={this.onChangeShelf}
           />
         </div>
       </div>

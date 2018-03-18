@@ -28,7 +28,6 @@ class BooksApp extends React.Component {
     BooksAPI.update(bookToMove, shelf).then((shelves) => {
       this.setState((prevState) => {
         const bookMoved = Object.assign({}, bookToMove, { shelf })
-
         return {
           books: Object.assign({}, prevState.books, { [bookToMove.id]: bookMoved }),
         }
