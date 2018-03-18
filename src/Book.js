@@ -15,7 +15,7 @@ class Book extends Component {
     return (
       <div className="book">
         <div className="book-top">
-          <div className="book-cover" style={{ width: '100%', height: '100%', background: `center no-repeat url("${this.props.coverURL}")` }}></div>
+          <div className="book-cover" style={{ width: '100%', height: '100%', background: this.props.coverURL ? `url("${this.props.coverURL}") center center no-repeat` : 'none' }}></div>
           <div className="book-shelf-changer">
             <select value={this.props.shelf} onChange={(shelf) => this.props.onChangeShelf(shelf.target.value)}>
               <option disabled>Move to...</option>
