@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import Book from './Book'
+
+import BookList from './BookList'
 
 class Bookshelf extends Component {
 
   static propTypes = {
     title: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
     books: PropTypes.array.isRequired,
     onChangeShelf: PropTypes.func.isRequired,
   }
@@ -16,21 +16,10 @@ class Bookshelf extends Component {
       <div className="bookshelf">
         <h2 className="bookshelf-title">{this.props.title}</h2>
         <div className="bookshelf-books">
-          <ol className="books-grid">
-            {this.props.books.map((book, index) => (
-              <li key={index}>
-                <Book
-                  coverURL={book.coverURL}
-                  shelf={this.props.value}
-                  title={book.title}
-                  authors={book.authors}
-                  onChangeShelf={(shelf) => {
-                    this.props.onChangeShelf(book, shelf)
-                  }}
-                />
-              </li>
-            ))}
-          </ol>
+          <BookList
+            books={this.props.books}
+            onChangeShelf={this.props.onChangeShelf}
+          />
         </div>
       </div>
     )
